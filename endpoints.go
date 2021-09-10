@@ -6,11 +6,13 @@ type EP int
 const (
 	EPToken = iota
 	EPTokenRefresh
+	EPClients
 )
 
 var epStrings = [...]string{
 	`/cwa/api/v1/apitoken`,
 	`/cwa/api/v1/apitoken/refresh`,
+	`/cwa/api/v1/clients`,
 }
 
 func (ep EP) String() string {

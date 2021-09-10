@@ -109,11 +109,11 @@ func readResponse(prompt string) string {
 		Failf("error reading response: %v", err)
 	}
 	r = bytes.TrimSpace(r)
-	return fmt.Sprintf("%s", r)
+	return string(r)
 }
 
 func readSecret(prompt string) (secret string) {
-	fmt.Fprintf(os.Stderr, prompt)
+	fmt.Fprint(os.Stderr, prompt)
 	byteSecret, err := terminal.ReadPassword(int(syscall.Stdin))
 	if err != nil {
 		Failf("Error reading secret: %v", err)

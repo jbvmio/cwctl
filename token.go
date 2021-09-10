@@ -36,7 +36,7 @@ func ImportToken(path string) (*Token, error) {
 
 // Refresh refreshed the token.
 func (t *Token) Refresh(baseURL, clientID string, c *http.Client) error {
-	req, err := makeReq(baseURL, clientID, EPTokenRefresh, t.AccessToken)
+	req, err := makeReq(baseURL, clientID, EPTokenRefresh, nil, t.AccessToken)
 	if err != nil {
 		return err
 	}

@@ -120,7 +120,7 @@ func clientFromToken(baseURL, clientID string, token *Token) (*Client, error) {
 
 func clientFromLogin(baseURL, clientID string, creds *Credentials) (*Client, error) {
 	c := http.Client{}
-	req, err := makeReq(baseURL, clientID, EPToken, creds)
+	req, err := makeReq(baseURL, clientID, EPToken, nil, creds)
 	if err != nil {
 		return &Client{}, fmt.Errorf("error creating request: %w", err)
 	}
@@ -151,9 +151,12 @@ func clientFromLogin(baseURL, clientID string, creds *Credentials) (*Client, err
 	}, nil
 }
 
-func makeReq(baseURL, clientID string, ep EP, v interface{}) (*http.Request, error) {
+func makeReq(baseURL, clientID string, ep EP, params *Parameters, v interface{}) (*http.Request, error) {
 	method := getMethod(ep)
 	U := baseURL + ep.String()
+	if params != nil {
+		U += params.Build().Encode()
+	}
 	var pl io.Reader
 	switch v {
 	case nil:
