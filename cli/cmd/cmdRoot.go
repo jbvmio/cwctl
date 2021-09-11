@@ -35,8 +35,8 @@ func init() {
 	cobra.OnInitialize(initConfig)
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", homeDir()+`/.cwctl.yaml`, "Path to config file")
 	rootCmd.PersistentFlags().StringVarP(&outFormat, "out", "o", "", "Additional Output Formatting Options - raw|json|pretty|yaml.")
-	rootCmd.AddCommand(cmdRaw)
 	rootCmd.AddCommand(cmdGet)
+	rootCmd.AddCommand(cmdRaw)
 }
 
 func initConfig() {

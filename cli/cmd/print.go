@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"github.com/jbvmio/cwctl"
 	"github.com/rodaine/table"
 	"github.com/tidwall/pretty"
 	"gopkg.in/yaml.v3"
@@ -15,13 +16,16 @@ func printOut(i interface{}) {
 	case string:
 		tbl = table.New("OBJECT")
 		tbl.AddRow(i)
-
+	case []cwctl.EndPoint:
+		tbl = table.New("ID", "PATH")
+		for _, v := range i {
+			tbl.AddRow(int(v.ID), v.Path)
+		}
 	case []Client:
 		tbl = table.New("ID", "NAME", "COMPANY", "CITY", "STATE", "LOCATIONS")
 		for _, v := range i {
 			tbl.AddRow(v.Id, v.Name, v.Company, v.City, v.State, len(v.Locations))
 		}
-
 	}
 	tbl.Print()
 }

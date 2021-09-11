@@ -7,7 +7,7 @@ import (
 var cmdGetClients = &cobra.Command{
 	Use:     "clients",
 	Aliases: []string{"client"},
-	Short:   "cwctl: get client details",
+	Short:   "get client details",
 	Run: func(cmd *cobra.Command, args []string) {
 		client := initClient(cfg)
 		clients := getClients(client, &cwFlags)

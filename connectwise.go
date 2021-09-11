@@ -157,6 +157,20 @@ func makeReq(baseURL, clientID string, ep EP, params *Parameters, v interface{})
 	if params != nil {
 		U += params.Build().Encode()
 	}
+	pl, err := ioReaderOrNil(v)
+	if err != nil {
+		return nil, err
+	}
+	req, err := http.NewRequest(method, U, pl)
+	if err != nil {
+		return req, err
+	}
+	req.Header.Add(`Content-Type`, `application/json`)
+	req.Header.Add(`ClientId`, clientID)
+	return req, nil
+}
+
+func ioReaderOrNil(v interface{}) (io.Reader, error) {
 	var pl io.Reader
 	switch v {
 	case nil:
@@ -168,11 +182,5 @@ func makeReq(baseURL, clientID string, ep EP, params *Parameters, v interface{})
 		}
 		pl = bytes.NewBuffer(j)
 	}
-	req, err := http.NewRequest(method, U, pl)
-	if err != nil {
-		return req, err
-	}
-	req.Header.Add(`Content-Type`, `application/json`)
-	req.Header.Add(`ClientId`, clientID)
-	return req, nil
+	return pl, nil
 }
