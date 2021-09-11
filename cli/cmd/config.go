@@ -55,6 +55,7 @@ func clientFromConfig(cfg *Config) (*cwctl.Client, error) {
 		if err != nil {
 			return &cwctl.Client{}, fmt.Errorf("error importing CW token: %w", err)
 		}
+		at := token.AccessToken
 		client, err := cwctl.NewClient(cfg.BaseURL, cfg.ClientID, token)
 		if err != nil {
 			switch err.Error() {
@@ -62,6 +63,12 @@ func clientFromConfig(cfg *Config) (*cwctl.Client, error) {
 				return loginCW(cfg)
 			default:
 				return client, fmt.Errorf("error creating CW client: %w", err)
+			}
+		}
+		if token.AccessToken != at {
+			err = client.SaveToken(cfg.TokenFile)
+			if err != nil {
+				return client, fmt.Errorf("error saving refreshed CW token: %w", err)
 			}
 		}
 		return client, nil
