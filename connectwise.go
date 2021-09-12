@@ -86,6 +86,11 @@ func (C *Client) RawRest(URI, method, body string) error {
 	return nil
 }
 
+// RefreshToken refreshes the current token being used by the Client.
+func (C *Client) RefreshToken() error {
+	return C.Token.Refresh(C.baseURL, C.clientID, &C.c)
+}
+
 // SaveToken saves the current token to the given path.
 func (C *Client) SaveToken(path string) error {
 	return C.Token.Save(path)
@@ -99,19 +104,8 @@ func clientFromToken(baseURL, clientID string, token *Token) (*Client, error) {
 	if time.Now().UTC().After(E) {
 		return &Client{}, fmt.Errorf("Token Expired")
 	}
-	c := http.Client{}
-	S, err := token.SecondsLeft()
-	if err != nil {
-		return &Client{}, fmt.Errorf("error obtaining token seconds before expiry: %w", err)
-	}
-	if S <= 300 {
-		err := token.Refresh(baseURL, clientID, &c)
-		if err != nil {
-			return &Client{}, fmt.Errorf("error refreshing token: %w", err)
-		}
-	}
 	return &Client{
-		c:        c,
+		c:        http.Client{},
 		clientID: clientID,
 		Token:    token,
 		baseURL:  baseURL,
