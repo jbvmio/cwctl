@@ -8,10 +8,6 @@ import (
 	"time"
 )
 
-const (
-	dateLayout = `2006-01-02T15:04:05`
-)
-
 // Token is the token payload given by the CW API.
 type Token struct {
 	AccessToken                 string
@@ -65,7 +61,7 @@ func (t *Token) Refresh(baseURL, clientID string, c *http.Client) error {
 
 // Expires returns the ExpirationDate for the Token.
 func (t *Token) Expires() (time.Time, error) {
-	return time.Parse(dateLayout, t.ExpirationDate)
+	return time.Parse(DateLayout, t.ExpirationDate)
 }
 
 // TimeLeft returns the duration remaining before the Token expires.

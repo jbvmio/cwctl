@@ -7,9 +7,9 @@ import (
 	"strings"
 )
 
-// GetClients returns Clients.
-func (C *Client) GetClients(params *Parameters) ([]byte, error) {
-	req, err := makeReq(C.baseURL, C.clientID, EPClients, params, nil)
+// Get performs GET requests, returning resources using the given endpoint and parameters.
+func (C *Client) Get(ep EP, params *Parameters) ([]byte, error) {
+	req, err := makeReq(C.baseURL, C.clientID, ep, params, nil)
 	if err != nil {
 		return []byte{}, fmt.Errorf("error creating request: %w", err)
 	}

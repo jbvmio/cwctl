@@ -27,18 +27,17 @@ func printOut(i interface{}) {
 		for _, v := range i {
 			tbl.AddRow(v.Id, v.Name, v.Company, v.City, v.State, len(v.Locations))
 		}
+	case []cwctl.Computer:
+		tbl = table.New("ID", "DOMAIN", "COMPUTER", "IP", "OS", "OSVersion", "VirusScanner", "AntivirusDefinitions", "AGENT", "LastHeartBeat", "LastUser")
+		for _, v := range i {
+			tbl.AddRow(v.Id, v.DomainName, v.ComputerName, v.LocalIPAddress, v.OperatingSystemName, v.OperatingSystemVersion, v.VirusScanner.Name, v.AntivirusDefinitionDate, v.RemoteAgentVersion, v.LastHeartbeat, v.LastUserName)
+		}
 	}
 	tbl.Print()
 }
 
 func handlePrint(object interface{}, format string) {
 	switch format {
-	case `raw`:
-		if o, ok := object.([]byte); ok {
-			fmt.Printf("%s", o)
-			return
-		}
-		Failf("unable to display, not raw object")
 	case `yaml`:
 		fmtString, err := yaml.Marshal(object)
 		if err != nil {

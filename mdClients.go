@@ -14,24 +14,22 @@ type Client struct {
 	Company    string
 	City       string
 	State      string
-	Locations  []Location
-}
-
-type Location struct {
-	Id   int
-	Name string
+	Locations  []IdNameInt
 }
 
 // GetClients returns a list of Clients.
 func GetClients(C *connectwise.Client, params *connectwise.Parameters) ([]Client, error) {
-	var clients []Client
-	b, err := C.GetClients(params)
+	var (
+		resource []Client
+		desc     string = `clients`
+	)
+	b, err := C.Get(connectwise.EPClients, params)
 	if err != nil {
-		return clients, fmt.Errorf("error retrieving clients: %w", err)
+		return resource, fmt.Errorf("error retrieving %s: %w", desc, err)
 	}
-	err = json.Unmarshal(b, &clients)
+	err = json.Unmarshal(b, &resource)
 	if err != nil {
-		return clients, fmt.Errorf("error unmarshaling clients: %v", err)
+		return resource, fmt.Errorf("error unmarshaling %s: %v", desc, err)
 	}
-	return clients, nil
+	return resource, nil
 }

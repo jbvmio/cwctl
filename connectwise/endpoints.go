@@ -9,12 +9,14 @@ const (
 	EPToken = iota
 	EPTokenRefresh
 	EPClients
+	EPComputers
 )
 
 var epStrings = [...]string{
 	`/cwa/api/v1/apitoken`,
 	`/cwa/api/v1/apitoken/refresh`,
 	`/cwa/api/v1/clients`,
+	`/cwa/api/v1/computers`,
 }
 
 func (ep EP) String() string {
@@ -23,7 +25,8 @@ func (ep EP) String() string {
 
 var setEmpty = struct{}{}
 var availEPs = map[EP]struct{}{
-	EPClients: setEmpty,
+	EPClients:   setEmpty,
+	EPComputers: setEmpty,
 }
 
 func epAvailable(ep EP) bool {

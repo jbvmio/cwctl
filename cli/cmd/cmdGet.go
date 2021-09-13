@@ -1,9 +1,17 @@
 package cmd
 
 import (
+	"github.com/jbvmio/cwctl/connectwise"
 	"github.com/spf13/cobra"
 )
 
+var (
+	cliClientID string
+	cliFlags    = connectwise.Parameters{
+		Page:     `1`,
+		PageSize: `50`,
+	}
+)
 var cmdGet = &cobra.Command{
 	Use:   "get",
 	Short: "get resource details",
@@ -19,4 +27,5 @@ var cmdGet = &cobra.Command{
 
 func init() {
 	cmdGet.AddCommand(cmdGetClients)
+	cmdGet.AddCommand(cmdGetComputers)
 }

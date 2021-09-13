@@ -11,7 +11,7 @@ var cmdGetClients = &cobra.Command{
 	Short:   "get client details",
 	Run: func(cmd *cobra.Command, args []string) {
 		client := initClient(cfg)
-		clients, err := cwctl.GetClients(client, &cwFlags)
+		clients, err := cwctl.GetClients(client, paramsClient.merge(&cliFlags))
 		if err != nil {
 			Failf("error attempting GetClients: %v", err)
 		}
@@ -20,5 +20,6 @@ var cmdGetClients = &cobra.Command{
 }
 
 func init() {
-	//cmdGet.AddCommand(cmdCases)
+	cmdGetClients.Flags().StringVarP(&cliFlags.Page, "page", `p`, cliFlags.Page, "Page number of results.")
+	cmdGetClients.Flags().StringVarP(&cliFlags.PageSize, "page-size", `s`, cliFlags.PageSize, "Results per page.")
 }
