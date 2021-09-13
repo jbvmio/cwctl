@@ -55,7 +55,7 @@ func (t *Token) Refresh(baseURL, clientID string, c *http.Client) error {
 	if err != nil {
 		return err
 	}
-	t = &token
+	*t = token
 	return nil
 }
 
