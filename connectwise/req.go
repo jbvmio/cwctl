@@ -1,7 +1,9 @@
 package connectwise
 
 import (
+	"encoding/json"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"net/http"
 	"strings"
@@ -15,8 +17,15 @@ func (C *Client) Get(ep EP, params *Parameters) ([]byte, error) {
 	}
 	req.Header.Add(`Authorization`, `Bearer `+C.Token.AccessToken)
 	resp, err := C.c.Do(req)
-	if err != nil {
+	switch {
+	case err != nil:
 		return []byte{}, fmt.Errorf("error sending request: %w", err)
+	case resp.StatusCode != 200:
+		err = checkApiErr(resp.Body)
+		if err == nil {
+			err = fmt.Errorf("status code %d", resp.StatusCode)
+		}
+		return []byte{}, err
 	}
 	defer resp.Body.Close()
 	return ioutil.ReadAll(resp.Body)
@@ -66,4 +75,23 @@ func (C *Client) RawRestPath(path, method, body string, params *Parameters) ([]b
 	}
 	defer resp.Body.Close()
 	return ioutil.ReadAll(resp.Body)
+}
+
+func checkApiErr(body io.ReadCloser) error {
+	if body == nil {
+		return nil
+	}
+	defer body.Close()
+	b, err := ioutil.ReadAll(body)
+	if err != nil {
+		return nil
+	}
+	tmp := struct {
+		Message string
+	}{}
+	json.Unmarshal(b, &tmp)
+	if tmp.Message == "" {
+		return nil
+	}
+	return fmt.Errorf(tmp.Message)
 }

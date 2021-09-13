@@ -74,9 +74,10 @@ type LoggedInUser struct {
 func GetComputers(C *connectwise.Client, params *connectwise.Parameters) ([]Computer, error) {
 	var (
 		resource []Computer
-		desc     string = `computers`
+		desc     string         = `computers`
+		ep       connectwise.EP = connectwise.EPComputers
 	)
-	b, err := C.Get(connectwise.EPComputers, params)
+	b, err := C.Get(ep, params)
 	if err != nil {
 		return resource, fmt.Errorf("error retrieving %s: %w", desc, err)
 	}

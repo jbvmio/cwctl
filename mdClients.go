@@ -21,9 +21,10 @@ type Client struct {
 func GetClients(C *connectwise.Client, params *connectwise.Parameters) ([]Client, error) {
 	var (
 		resource []Client
-		desc     string = `clients`
+		desc     string         = `clients`
+		ep       connectwise.EP = connectwise.EPClients
 	)
-	b, err := C.Get(connectwise.EPClients, params)
+	b, err := C.Get(ep, params)
 	if err != nil {
 		return resource, fmt.Errorf("error retrieving %s: %w", desc, err)
 	}
