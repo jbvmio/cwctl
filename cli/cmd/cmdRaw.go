@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"github.com/jbvmio/cwctl"
+	"github.com/jbvmio/ewctl/connectwise"
 	"github.com/spf13/cobra"
 )
 
@@ -9,7 +9,7 @@ var (
 	rawMethod string
 	rawBody   string
 	epID      int
-	cwFlags   cwctl.Parameters
+	cwFlags   connectwise.Parameters
 )
 
 var cmdRaw = &cobra.Command{
@@ -20,7 +20,7 @@ var cmdRaw = &cobra.Command{
 		switch {
 		case cmd.Flags().Changed(`id`):
 			client := initClient(cfg)
-			b, err := client.RawRestID(cwctl.EP(epID), rawBody, &cwFlags)
+			b, err := client.RawRestID(connectwise.EP(epID), rawBody, &cwFlags)
 			if err != nil {
 				Failf("error making raw rest call with ID %d: %v", epID, err)
 			}
@@ -33,7 +33,7 @@ var cmdRaw = &cobra.Command{
 			}
 			handlePrint(b, `raw`)
 		default:
-			EPs := cwctl.GetEndPoints()
+			EPs := connectwise.GetEndPoints()
 			handlePrint(EPs, outFormat)
 
 		}

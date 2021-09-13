@@ -1,4 +1,4 @@
-package cwctl
+package connectwise
 
 import "net/url"
 

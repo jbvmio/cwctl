@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/jbvmio/cwctl"
+	"github.com/jbvmio/ewctl/connectwise"
 	"github.com/spf13/cobra"
 )
 
@@ -47,7 +47,7 @@ func initConfig() {
 	}
 }
 
-func initClient(cfg *Config) *cwctl.Client {
+func initClient(cfg *Config) *connectwise.Client {
 	client, err := clientFromConfig(cfg)
 	if err != nil {
 		Failf("init err: %v", err)

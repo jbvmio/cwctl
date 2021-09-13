@@ -3,7 +3,7 @@ package cmd
 import (
 	"encoding/json"
 
-	"github.com/jbvmio/cwctl"
+	"github.com/jbvmio/ewctl/connectwise"
 )
 
 type Client struct {
@@ -21,7 +21,7 @@ type Location struct {
 	Name string
 }
 
-func getClients(C *cwctl.Client, params *cwctl.Parameters) []Client {
+func getClients(C *connectwise.Client, params *connectwise.Parameters) []Client {
 	b, err := C.GetClients(params)
 	if err != nil {
 		Failf("error retrieving clients: %v", err)

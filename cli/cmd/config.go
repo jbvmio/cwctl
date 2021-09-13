@@ -10,7 +10,7 @@ import (
 	"strings"
 	"syscall"
 
-	"github.com/jbvmio/cwctl"
+	"github.com/jbvmio/ewctl/connectwise"
 	"golang.org/x/crypto/ssh/terminal"
 	"gopkg.in/yaml.v3"
 )
@@ -46,16 +46,16 @@ func GetConfig(path string) (*Config, error) {
 	return &C, err
 }
 
-func clientFromConfig(cfg *Config) (*cwctl.Client, error) {
+func clientFromConfig(cfg *Config) (*connectwise.Client, error) {
 	switch {
 	case !fileExists(cfg.TokenFile):
 		return loginCW(cfg)
 	default:
-		token, err := cwctl.ImportToken(cfg.TokenFile)
+		token, err := connectwise.ImportToken(cfg.TokenFile)
 		if err != nil {
-			return &cwctl.Client{}, fmt.Errorf("error importing CW token: %w", err)
+			return &connectwise.Client{}, fmt.Errorf("error importing CW token: %w", err)
 		}
-		client, err := cwctl.NewClient(cfg.BaseURL, cfg.ClientID, token)
+		client, err := connectwise.NewClient(cfg.BaseURL, cfg.ClientID, token)
 		if err != nil {
 			switch err.Error() {
 			case `Token Expired`:
@@ -82,14 +82,14 @@ func clientFromConfig(cfg *Config) (*cwctl.Client, error) {
 	}
 }
 
-func loginCW(cfg *Config) (*cwctl.Client, error) {
+func loginCW(cfg *Config) (*connectwise.Client, error) {
 	user, pass, code := getLoginCreds()
-	auth := cwctl.Credentials{
+	auth := connectwise.Credentials{
 		Username:          user,
 		Password:          pass,
 		TwoFactorPasscode: code,
 	}
-	client, err := cwctl.NewClient(cfg.BaseURL, cfg.ClientID, &auth)
+	client, err := connectwise.NewClient(cfg.BaseURL, cfg.ClientID, &auth)
 	if err != nil {
 		return client, fmt.Errorf("error creating CW client: %w", err)
 	}

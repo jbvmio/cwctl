@@ -1,4 +1,4 @@
-package cwctl
+package connectwise
 
 // AuthType represents an Authentication Type.
 type AuthType int
