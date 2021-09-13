@@ -10,8 +10,8 @@ import (
 	"strings"
 	"syscall"
 
-	"github.com/jbvmio/ewctl/connectwise"
-	"golang.org/x/crypto/ssh/terminal"
+	"github.com/jbvmio/cwctl/connectwise"
+	"golang.org/x/term"
 	"gopkg.in/yaml.v3"
 )
 
@@ -128,7 +128,7 @@ func readResponse(prompt string) string {
 
 func readSecret(prompt string) (secret string) {
 	fmt.Fprint(os.Stderr, prompt)
-	byteSecret, err := terminal.ReadPassword(int(syscall.Stdin))
+	byteSecret, err := term.ReadPassword(int(syscall.Stdin))
 	if err != nil {
 		Failf("Error reading secret: %v", err)
 	}

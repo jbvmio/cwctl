@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"github.com/jbvmio/cwctl"
 	"github.com/spf13/cobra"
 )
 
@@ -10,7 +11,10 @@ var cmdGetClients = &cobra.Command{
 	Short:   "get client details",
 	Run: func(cmd *cobra.Command, args []string) {
 		client := initClient(cfg)
-		clients := getClients(client, &cwFlags)
+		clients, err := cwctl.GetClients(client, &cwFlags)
+		if err != nil {
+			Failf("error attempting GetClients: %v", err)
+		}
 		handlePrint(clients, outFormat)
 	},
 }

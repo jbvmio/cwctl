@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"github.com/jbvmio/ewctl/connectwise"
+	"github.com/jbvmio/cwctl/connectwise"
 	"github.com/spf13/cobra"
 )
 
