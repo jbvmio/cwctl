@@ -10,16 +10,38 @@ import (
 )
 
 // Get performs GET requests, returning resources using the given endpoint and parameters.
-func (C *Client) Get(ep EP, params *Parameters) ([]byte, error) {
-	req, err := makeReq(C.baseURL, C.clientID, ep, params, nil)
+func (C *Client) Get(ep EP, params *Parameters, args ...interface{}) ([]byte, error) {
+	req, err := makeReq(C.baseURL, C.clientID, ep, params, nil, args...)
 	if err != nil {
-		return []byte{}, fmt.Errorf("error creating request: %w", err)
+		return []byte{}, fmt.Errorf("error creating GET request: %w", err)
 	}
 	req.Header.Add(`Authorization`, `Bearer `+C.Token.AccessToken)
 	resp, err := C.c.Do(req)
 	switch {
 	case err != nil:
-		return []byte{}, fmt.Errorf("error sending request: %w", err)
+		return []byte{}, fmt.Errorf("error sending GET request: %w", err)
+	case resp.StatusCode != 200:
+		err = checkApiErr(resp.Body)
+		if err == nil {
+			err = fmt.Errorf("status code %d", resp.StatusCode)
+		}
+		return []byte{}, err
+	}
+	defer resp.Body.Close()
+	return ioutil.ReadAll(resp.Body)
+}
+
+// Post performs POST requests, returning responses using the given endpoint and parameters.
+func (C *Client) Post(ep EP, params *Parameters, body interface{}, args ...interface{}) ([]byte, error) {
+	req, err := makeReq(C.baseURL, C.clientID, ep, params, body, args...)
+	if err != nil {
+		return []byte{}, fmt.Errorf("error creating POST request: %w", err)
+	}
+	req.Header.Add(`Authorization`, `Bearer `+C.Token.AccessToken)
+	resp, err := C.c.Do(req)
+	switch {
+	case err != nil:
+		return []byte{}, fmt.Errorf("error sending POST request: %w", err)
 	case resp.StatusCode != 200:
 		err = checkApiErr(resp.Body)
 		if err == nil {

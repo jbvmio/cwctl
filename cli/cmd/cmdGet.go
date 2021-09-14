@@ -6,7 +6,7 @@ import (
 )
 
 var (
-	cliClientID   string
+	cliTargetID   string
 	cliTargets    []string
 	cliExactMatch bool
 	cliFlags      = connectwise.Parameters{

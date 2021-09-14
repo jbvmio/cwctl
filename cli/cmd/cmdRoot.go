@@ -37,6 +37,7 @@ func init() {
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", homeDir()+`/.cwctl.yaml`, "Path to config file")
 	rootCmd.PersistentFlags().StringVarP(&outFormat, "out", "o", "", "Additional Output Formatting Options - json|pretty|yaml.")
 	rootCmd.AddCommand(cmdGet)
+	rootCmd.AddCommand(cmdRun)
 	rootCmd.AddCommand(cmdRaw)
 	rootCmd.AddCommand(cmdRefreshToken)
 }
@@ -66,7 +67,7 @@ func handleRefresh(client *connectwise.Client) {
 	case S >= 3300:
 		Infof("%v remaining on prior token...", time.Duration(S)*time.Second)
 	default:
-		Infof("%f remaining on prior token... refreshing", time.Duration(S)*time.Second)
+		Infof("%v remaining on prior token... refreshing", time.Duration(S)*time.Second)
 		err = client.RefreshToken()
 		if err != nil {
 			Failf("error refreshing token: %v", err)

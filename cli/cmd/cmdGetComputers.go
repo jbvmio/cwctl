@@ -6,8 +6,8 @@ import (
 )
 
 var cmdGetComputers = &cobra.Command{
-	Use:     "computers",
-	Aliases: []string{"computer", "comps", "comp"},
+	Use:     "computer",
+	Aliases: []string{"computers", "comps", "comp"},
 	Short:   "get computer details",
 	Run: func(cmd *cobra.Command, args []string) {
 		var condition, ids string
@@ -31,9 +31,9 @@ var cmdGetComputers = &cobra.Command{
 		default:
 			switch len(args) {
 			case 0:
-				condition = `client.id eq ` + cliClientID
+				condition = `client.id eq ` + cliTargetID
 			default:
-				condition = `(client.id eq ` + cliClientID + `) and ` + ids
+				condition = `(client.id eq ` + cliTargetID + `) and ` + ids
 			}
 		}
 		cliFlags.Condition = condition
@@ -47,7 +47,8 @@ var cmdGetComputers = &cobra.Command{
 }
 
 func init() {
-	cmdGetComputers.Flags().StringVarP(&cliClientID, "client-id", `C`, "", "ID of the Client to target.")
+	cmdGetComputers.Flags().StringVarP(&cliTargetID, "client-id", `C`, "", "ID of the Client to target.")
 	cmdGetComputers.Flags().StringVarP(&cliFlags.Page, "page", `p`, cliFlags.Page, "Page number of results.")
 	cmdGetComputers.Flags().StringVarP(&cliFlags.PageSize, "page-size", `s`, cliFlags.PageSize, "Results per page.")
+	cmdGetComputers.AddCommand(cmdComputerCommands)
 }

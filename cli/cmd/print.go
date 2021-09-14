@@ -3,6 +3,7 @@ package cmd
 import (
 	"encoding/json"
 	"fmt"
+	"strings"
 
 	"github.com/jbvmio/cwctl"
 	"github.com/jbvmio/cwctl/connectwise"
@@ -37,6 +38,19 @@ func printOut(i interface{}) {
 		for _, v := range i {
 			tbl.AddRow(v.Id, v.Name, truncateString(v.Description, 120))
 		}
+	case []cwctl.CommandHistory:
+		tbl = table.New("ID", "ComputerID", "STATUS", "USER", "PARAMETERS", "EXECUTED", "FINISHED")
+		for _, v := range i {
+			tbl.AddRow(v.Id, v.ComputerId, v.Status, v.User, truncateString(v.Parameters, 120), v.DateExecuted, v.DateFinished)
+		}
+	case cwctl.CommandExecuteResponse:
+		tbl = table.New("ID", "ComputerID", "STATUS", "PARAMETERS", "LastInventoried")
+		tbl.AddRow(i.Id, i.ComputerId, i.Status, len(i.Parameters), i.DateLastInventoried)
+	case []cwctl.CommandExecuteResponse:
+		tbl = table.New("ID", "ComputerID", "STATUS", "PARAMETERS", "LastInventoried")
+		for _, v := range i {
+			tbl.AddRow(v.Id, v.ComputerId, v.Status, len(v.Parameters), v.DateLastInventoried)
+		}
 	}
 	tbl.Print()
 }
@@ -45,7 +59,7 @@ func handlePrint(object interface{}, format string) {
 	switch format {
 	case `raw`:
 		if o, ok := object.([]byte); ok {
-			fmt.Printf("%s", o)
+			fmt.Printf("%s\n", o)
 			return
 		}
 		Failf("unable to display, not raw object")
@@ -73,7 +87,8 @@ func handlePrint(object interface{}, format string) {
 }
 
 func truncateString(str string, num int) string {
-	s := str
+	s := strings.ReplaceAll(str, `\r\n`, `\n`)
+	s = strings.ReplaceAll(s, `\n`, ``)
 	if len(str) > num {
 		if num > 3 {
 			num -= 3

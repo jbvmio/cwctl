@@ -31,7 +31,7 @@ var cmdRaw = &cobra.Command{
 			handlePrint(b, `raw`)
 		case cmd.Flags().Changed(`path`):
 			client := initClient(cfg)
-			b, err := client.RawRestPath(args[0], rawMethod, rawBody, &rawFlags)
+			b, err := client.RawRestPath(rawPath, rawMethod, rawBody, &rawFlags)
 			if err != nil {
 				Failf("error making raw rest call with ID %d: %v", epID, err)
 			}

@@ -25,14 +25,14 @@ var epStrings = [...]string{
 	`/cwa/api/v1/apitoken/refresh`,
 	`/cwa/api/v1/clients`,
 	`/cwa/api/v1/computers`,
-	`/cwa/api/v1/computers/%s`,
-	`/cwa/api/v1/computers/%s/commandexecute`,
-	`/cwa/api/v1/computers/%s/commandhistory`,
+	`/cwa/api/v1/computers/%v`,
+	`/cwa/api/v1/computers/%v/commandexecute`,
+	`/cwa/api/v1/computers/%v/commandhistory`,
 	`/cwa/api/v1/commands`,
 }
 
 func (ep EP) String(args ...interface{}) string {
-	n := strings.Count(epStrings[ep], `%s`)
+	n := strings.Count(epStrings[ep], `%v`)
 	a := len(args)
 	switch {
 	case n == a:
@@ -41,7 +41,7 @@ func (ep EP) String(args ...interface{}) string {
 	case n > a:
 		delta := n - len(args)
 		for i := 0; i < delta; i++ {
-			args = append(args, `%s`)
+			args = append(args, `%v`)
 		}
 	case a > n:
 		args = args[:n]
@@ -92,6 +92,8 @@ func GetEndPoints(args ...interface{}) []EndPoint {
 func getMethod(ep EP) (method string) {
 	switch ep {
 	case EPToken, EPTokenRefresh:
+		return `POST`
+	case EPComputerCmdExec:
 		return `POST`
 	default:
 		return `GET`
