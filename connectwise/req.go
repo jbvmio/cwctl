@@ -32,14 +32,25 @@ func (C *Client) Get(ep EP, params *Parameters) ([]byte, error) {
 }
 
 // RawRestID performs a Raw REST request using the given ID.
-func (C *Client) RawRestID(ep EP, body string, params *Parameters) ([]byte, error) {
+func (C *Client) RawRestID(ep EP, body string, params *Parameters, args ...interface{}) ([]byte, error) {
 	if !epAvailable(ep) {
 		return []byte{}, fmt.Errorf("endpoint id %d is not defined or unavailable", ep)
 	}
-	req, err := makeReq(C.baseURL, C.clientID, ep, params, body)
+	method := getMethod(ep)
+	U := C.baseURL + ep.String(args...)
+	if params != nil {
+		U += params.Build().Encode()
+	}
+	var pl io.Reader = nil
+	if body != "" {
+		pl = strings.NewReader(body)
+	}
+	req, err := http.NewRequest(method, U, pl)
 	if err != nil {
 		return []byte{}, fmt.Errorf("error creating request: %w", err)
 	}
+	req.Header.Add(`Content-Type`, `application/json`)
+	req.Header.Add(`ClientId`, C.clientID)
 	req.Header.Add(`Authorization`, `Bearer `+C.Token.AccessToken)
 	resp, err := C.c.Do(req)
 	if err != nil {
@@ -58,9 +69,9 @@ func (C *Client) RawRestPath(path, method, body string, params *Parameters) ([]b
 	if params != nil {
 		U += params.Build().Encode()
 	}
-	pl, err := ioReaderOrNil(body)
-	if err != nil {
-		return nil, err
+	var pl io.Reader = nil
+	if body != "" {
+		pl = strings.NewReader(body)
 	}
 	req, err := http.NewRequest(method, U, pl)
 	if err != nil {

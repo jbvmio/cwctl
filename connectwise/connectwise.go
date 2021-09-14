@@ -145,9 +145,9 @@ func clientFromLogin(baseURL, clientID string, creds *Credentials) (*Client, err
 	}, nil
 }
 
-func makeReq(baseURL, clientID string, ep EP, params *Parameters, v interface{}) (*http.Request, error) {
+func makeReq(baseURL, clientID string, ep EP, params *Parameters, v interface{}, args ...interface{}) (*http.Request, error) {
 	method := getMethod(ep)
-	U := baseURL + ep.String()
+	U := baseURL + ep.String(args...)
 	if params != nil {
 		U += params.Build().Encode()
 	}

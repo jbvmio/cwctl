@@ -20,7 +20,7 @@ func printOut(i interface{}) {
 	case []connectwise.EndPoint:
 		tbl = table.New("ID", "PATH")
 		for _, v := range i {
-			tbl.AddRow(int(v.ID), v.Path)
+			tbl.AddRow(v.ID, v.Path)
 		}
 	case []cwctl.Client:
 		tbl = table.New("ID", "NAME", "COMPANY", "CITY", "STATE", "LOCATIONS")
@@ -38,6 +38,12 @@ func printOut(i interface{}) {
 
 func handlePrint(object interface{}, format string) {
 	switch format {
+	case `raw`:
+		if o, ok := object.([]byte); ok {
+			fmt.Printf("%s", o)
+			return
+		}
+		Failf("unable to display, not raw object")
 	case `yaml`:
 		fmtString, err := yaml.Marshal(object)
 		if err != nil {

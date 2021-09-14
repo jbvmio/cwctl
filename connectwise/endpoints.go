@@ -1,6 +1,10 @@
 package connectwise
 
-import "sort"
+import (
+	"fmt"
+	"sort"
+	"strings"
+)
 
 // EP represents a CW endpoint.
 type EP int
@@ -10,6 +14,7 @@ const (
 	EPTokenRefresh
 	EPClients
 	EPComputers
+	EPComputer
 )
 
 var epStrings = [...]string{
@@ -17,16 +22,32 @@ var epStrings = [...]string{
 	`/cwa/api/v1/apitoken/refresh`,
 	`/cwa/api/v1/clients`,
 	`/cwa/api/v1/computers`,
+	`/cwa/api/v1/computers/%s`,
 }
 
-func (ep EP) String() string {
-	return epStrings[ep]
+func (ep EP) String(args ...interface{}) string {
+	n := strings.Count(epStrings[ep], `%s`)
+	a := len(args)
+	switch {
+	case n == a:
+	case n == 0:
+		args = []interface{}{}
+	case n > a:
+		delta := n - len(args)
+		for i := 0; i < delta; i++ {
+			args = append(args, `%s`)
+		}
+	case a > n:
+		args = args[:n]
+	}
+	return fmt.Sprintf(epStrings[ep], args...)
 }
 
 var setEmpty = struct{}{}
 var availEPs = map[EP]struct{}{
 	EPClients:   setEmpty,
 	EPComputers: setEmpty,
+	EPComputer:  setEmpty,
 }
 
 func epAvailable(ep EP) bool {
@@ -43,13 +64,13 @@ type EndPoint struct {
 }
 
 // GetEndPoints retrieves all available EndPoints.
-func GetEndPoints() []EndPoint {
+func GetEndPoints(args ...interface{}) []EndPoint {
 	EPs := make([]EndPoint, len(availEPs))
 	i := 0
 	for k := range availEPs {
 		EPs[i] = EndPoint{
 			ID:   k,
-			Path: k.String(),
+			Path: k.String(args...),
 		}
 		i++
 	}
