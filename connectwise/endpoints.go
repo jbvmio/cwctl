@@ -15,7 +15,9 @@ const (
 	EPClients
 	EPComputers
 	EPComputer
+	EPComputerCmdPrompt
 	EPComputerCmdExec
+	EPComputerCmdResult
 	EPComputerCmdHistory
 	EPCommands
 )
@@ -26,7 +28,9 @@ var epStrings = [...]string{
 	`/cwa/api/v1/clients`,
 	`/cwa/api/v1/computers`,
 	`/cwa/api/v1/computers/%v`,
+	`/cwa/api/v1/Computers/1485/CommandPrompt`,
 	`/cwa/api/v1/computers/%v/commandexecute`,
+	`/cwa/api/v1/computers/%v/commandexecute/%v`,
 	`/cwa/api/v1/computers/%v/commandhistory`,
 	`/cwa/api/v1/commands`,
 }
@@ -54,7 +58,9 @@ var availEPs = map[EP]struct{}{
 	EPClients:            setEmpty,
 	EPComputers:          setEmpty,
 	EPComputer:           setEmpty,
+	EPComputerCmdPrompt:  setEmpty,
 	EPComputerCmdExec:    setEmpty,
+	EPComputerCmdResult:  setEmpty,
 	EPComputerCmdHistory: setEmpty,
 	EPCommands:           setEmpty,
 }

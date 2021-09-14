@@ -64,6 +64,8 @@ func handleRefresh(client *connectwise.Client) {
 		Failf("error obtaining token seconds before expiry: %v", err)
 	}
 	switch {
+	case S >= 3600:
+		Infof("%v remaining on token...", time.Duration(S)*time.Second)
 	case S >= 3300:
 		Infof("%v remaining on prior token...", time.Duration(S)*time.Second)
 	default:

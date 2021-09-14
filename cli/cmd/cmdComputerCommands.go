@@ -29,7 +29,12 @@ var cmdComputerCommands = &cobra.Command{
 			case cmd.Flags().Changed(`out`):
 				handlePrint(target, outFormat)
 			default:
-				handlePrint([]byte(target[0].Output), `raw`)
+				raw := []byte(target[0].Output)
+				if len(raw) < 1 {
+					handlePrint(target, `table`)
+					return
+				}
+				handlePrint(raw, `raw`)
 			}
 		default:
 			handlePrint(target, outFormat)
