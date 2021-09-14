@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"time"
 
 	"github.com/jbvmio/cwctl/connectwise"
 	"github.com/spf13/cobra"
@@ -37,6 +38,7 @@ func init() {
 	rootCmd.PersistentFlags().StringVarP(&outFormat, "out", "o", "", "Additional Output Formatting Options - json|pretty|yaml.")
 	rootCmd.AddCommand(cmdGet)
 	rootCmd.AddCommand(cmdRaw)
+	rootCmd.AddCommand(cmdRefreshToken)
 }
 
 func initConfig() {
@@ -53,6 +55,27 @@ func initClient(cfg *Config) *connectwise.Client {
 		Failf("init err: %v", err)
 	}
 	return client
+}
+
+func handleRefresh(client *connectwise.Client) {
+	S, err := client.Token.SecondsLeft()
+	if err != nil {
+		Failf("error obtaining token seconds before expiry: %v", err)
+	}
+	switch {
+	case S >= 3300:
+		Infof("%v remaining on prior token...", time.Duration(S)*time.Second)
+	default:
+		Infof("%f remaining on prior token... refreshing", time.Duration(S)*time.Second)
+		err = client.RefreshToken()
+		if err != nil {
+			Failf("error refreshing token: %v", err)
+		}
+		err = client.SaveToken(cfg.TokenFile)
+		if err != nil {
+			Failf("error saving refreshed CW token: %v", err)
+		}
+	}
 }
 
 func homeDir() string {
