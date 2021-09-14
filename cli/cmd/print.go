@@ -32,6 +32,11 @@ func printOut(i interface{}) {
 		for _, v := range i {
 			tbl.AddRow(v.Id, v.DomainName, v.ComputerName, v.LocalIPAddress, v.OperatingSystemName, v.OperatingSystemVersion, v.VirusScanner.Name, v.AntivirusDefinitionDate, v.RemoteAgentVersion, v.LastHeartbeat, v.LastUserName)
 		}
+	case []cwctl.Command:
+		tbl = table.New("ID", "NAME", "DESCRIPTION")
+		for _, v := range i {
+			tbl.AddRow(v.Id, v.Name, truncateString(v.Description, 120))
+		}
 	}
 	tbl.Print()
 }

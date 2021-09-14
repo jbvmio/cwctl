@@ -15,6 +15,9 @@ const (
 	EPClients
 	EPComputers
 	EPComputer
+	EPComputerCmdExec
+	EPComputerCmdHistory
+	EPCommands
 )
 
 var epStrings = [...]string{
@@ -23,6 +26,9 @@ var epStrings = [...]string{
 	`/cwa/api/v1/clients`,
 	`/cwa/api/v1/computers`,
 	`/cwa/api/v1/computers/%s`,
+	`/cwa/api/v1/computers/%s/commandexecute`,
+	`/cwa/api/v1/computers/%s/commandhistory`,
+	`/cwa/api/v1/commands`,
 }
 
 func (ep EP) String(args ...interface{}) string {
@@ -45,9 +51,12 @@ func (ep EP) String(args ...interface{}) string {
 
 var setEmpty = struct{}{}
 var availEPs = map[EP]struct{}{
-	EPClients:   setEmpty,
-	EPComputers: setEmpty,
-	EPComputer:  setEmpty,
+	EPClients:            setEmpty,
+	EPComputers:          setEmpty,
+	EPComputer:           setEmpty,
+	EPComputerCmdExec:    setEmpty,
+	EPComputerCmdHistory: setEmpty,
+	EPCommands:           setEmpty,
 }
 
 func epAvailable(ep EP) bool {

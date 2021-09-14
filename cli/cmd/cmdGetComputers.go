@@ -38,11 +38,11 @@ var cmdGetComputers = &cobra.Command{
 		}
 		cliFlags.Condition = condition
 		client := initClient(cfg)
-		computers, err := cwctl.GetComputers(client, paramsComputer.merge(&cliFlags))
+		target, err := cwctl.GetComputers(client, paramsComputer.merge(&cliFlags))
 		if err != nil {
 			Failf("error attempting GetComputers: %v", err)
 		}
-		handlePrint(computers, outFormat)
+		handlePrint(target, outFormat)
 	},
 }
 

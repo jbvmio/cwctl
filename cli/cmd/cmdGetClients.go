@@ -11,11 +11,11 @@ var cmdGetClients = &cobra.Command{
 	Short:   "get client details",
 	Run: func(cmd *cobra.Command, args []string) {
 		client := initClient(cfg)
-		clients, err := cwctl.GetClients(client, paramsClient.merge(&cliFlags))
+		target, err := cwctl.GetClients(client, paramsDefault.merge(&cliFlags))
 		if err != nil {
 			Failf("error attempting GetClients: %v", err)
 		}
-		handlePrint(clients, outFormat)
+		handlePrint(target, outFormat)
 	},
 }
 

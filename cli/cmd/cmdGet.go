@@ -6,8 +6,10 @@ import (
 )
 
 var (
-	cliClientID string
-	cliFlags    = connectwise.Parameters{
+	cliClientID   string
+	cliTargets    []string
+	cliExactMatch bool
+	cliFlags      = connectwise.Parameters{
 		Page:     `1`,
 		PageSize: `50`,
 	}
@@ -28,4 +30,5 @@ var cmdGet = &cobra.Command{
 func init() {
 	cmdGet.AddCommand(cmdGetClients)
 	cmdGet.AddCommand(cmdGetComputers)
+	cmdGet.AddCommand(cmdGetCommands)
 }

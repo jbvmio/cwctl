@@ -20,7 +20,7 @@ func (f *flags) merge(params *connectwise.Parameters) *connectwise.Parameters {
 	return &F
 }
 
-var paramsClient = flags{}
+var paramsDefault = flags{}
 
 var paramsComputer = flags{
 	ExcludeFields: `address,irq`,
