@@ -39,7 +39,6 @@ var cmdComputerCommands = &cobra.Command{
 		default:
 			handlePrint(target, outFormat)
 		}
-
 	},
 }
 

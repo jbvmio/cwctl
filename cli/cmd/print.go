@@ -29,15 +29,18 @@ func printOut(i interface{}) {
 			tbl.AddRow(v.Id, v.Name, v.Company, v.City, v.State, len(v.Locations))
 		}
 	case []cwctl.Computer:
-		tbl = table.New("ID", "DOMAIN", "COMPUTER", "IP", "OS", "OSVersion", "VirusScanner", "AntivirusDefinitions", "AGENT", "LastHeartBeat", "LastUser")
+		tbl = table.New("ID", "DOMAIN", "COMPUTER", "IP", "OS", "VirusScanner", "AntivirusDefinitions", "AGENT", "STATUS", "LastHeartBeat", "LastUser")
 		for _, v := range i {
-			tbl.AddRow(v.Id, v.DomainName, v.ComputerName, v.LocalIPAddress, v.OperatingSystemName, v.OperatingSystemVersion, v.VirusScanner.Name, v.AntivirusDefinitionDate, v.RemoteAgentVersion, v.LastHeartbeat, v.LastUserName)
+			tbl.AddRow(v.Id, v.DomainName, v.ComputerName, v.LocalIPAddress, v.OperatingSystemName, v.VirusScanner.Name, v.AntivirusDefinitionDate, v.RemoteAgentVersion, v.Status, v.LastHeartbeat, v.LastUserName)
 		}
 	case []cwctl.Command:
 		tbl = table.New("ID", "NAME", "DESCRIPTION")
 		for _, v := range i {
 			tbl.AddRow(v.Id, v.Name, truncateString(v.Description, 120))
 		}
+	case cwctl.CommandPrompt:
+		tbl = table.New("ID", "COMPUTER", "COMMAND")
+		tbl.AddRow(i.CommandID, i.ComputerID, truncateString(i.CommandText, 120))
 	case []cwctl.CommandHistory:
 		tbl = table.New("ID", "ComputerID", "STATUS", "USER", "PARAMETERS", "EXECUTED", "FINISHED")
 		for _, v := range i {

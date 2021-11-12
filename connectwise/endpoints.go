@@ -28,11 +28,23 @@ var epStrings = [...]string{
 	`/cwa/api/v1/clients`,
 	`/cwa/api/v1/computers`,
 	`/cwa/api/v1/computers/%v`,
-	`/cwa/api/v1/Computers/1485/CommandPrompt`,
+	`/cwa/api/v1/Computers/%v/CommandPrompt`,
 	`/cwa/api/v1/computers/%v/commandexecute`,
 	`/cwa/api/v1/computers/%v/commandexecute/%v`,
 	`/cwa/api/v1/computers/%v/commandhistory`,
 	`/cwa/api/v1/commands`,
+}
+
+var setEmpty = struct{}{}
+var availEPs = map[EP]struct{}{
+	EPClients:            setEmpty,
+	EPComputers:          setEmpty,
+	EPComputer:           setEmpty,
+	EPComputerCmdPrompt:  setEmpty,
+	EPComputerCmdExec:    setEmpty,
+	EPComputerCmdResult:  setEmpty,
+	EPComputerCmdHistory: setEmpty,
+	EPCommands:           setEmpty,
 }
 
 func (ep EP) String(args ...interface{}) string {
@@ -51,18 +63,6 @@ func (ep EP) String(args ...interface{}) string {
 		args = args[:n]
 	}
 	return fmt.Sprintf(epStrings[ep], args...)
-}
-
-var setEmpty = struct{}{}
-var availEPs = map[EP]struct{}{
-	EPClients:            setEmpty,
-	EPComputers:          setEmpty,
-	EPComputer:           setEmpty,
-	EPComputerCmdPrompt:  setEmpty,
-	EPComputerCmdExec:    setEmpty,
-	EPComputerCmdResult:  setEmpty,
-	EPComputerCmdHistory: setEmpty,
-	EPCommands:           setEmpty,
 }
 
 func epAvailable(ep EP) bool {
@@ -99,7 +99,7 @@ func getMethod(ep EP) (method string) {
 	switch ep {
 	case EPToken, EPTokenRefresh:
 		return `POST`
-	case EPComputerCmdExec:
+	case EPComputerCmdExec, EPComputerCmdPrompt:
 		return `POST`
 	default:
 		return `GET`

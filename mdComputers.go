@@ -3,6 +3,8 @@ package cwctl
 import (
 	"encoding/json"
 	"fmt"
+	"regexp"
+	"strings"
 
 	"github.com/jbvmio/cwctl/connectwise"
 )
@@ -70,7 +72,38 @@ type LoggedInUser struct {
 	ConsoleId        int
 }
 
-// GetComputers returns a list of Clients.
+func (c *Computer) IsWindows() bool {
+	switch {
+	case strings.Contains(c.OperatingSystemName, `Windows`):
+		return true
+	case strings.Contains(c.OperatingSystemName, `Microsoft`):
+		return true
+	}
+	return false
+}
+
+func (c *Computer) IsOnline() bool {
+	return c.Status == `Online`
+}
+
+func (c *Computer) ExecuteCommand(C *connectwise.Client, cmd CommandPrompt) (CommandPrompt, error) {
+	cmd.ComputerID = c.Id
+	switch {
+	case c.IsWindows():
+		if cmd.Directory == "" {
+			cmd.Directory = `%windir%\\system32`
+		}
+	default:
+		if cmd.Directory == "" {
+			cmd.Directory = `/tmp/`
+		}
+		cmd.UsePowerShell = false
+		cmd.RunAsAdmin = false
+	}
+	return ExecuteCommandPrompt(C, nil, cmd)
+}
+
+// GetComputers returns a list of Computers.
 func GetComputers(C *connectwise.Client, params *connectwise.Parameters) ([]Computer, error) {
 	var (
 		resource []Computer
@@ -88,11 +121,28 @@ func GetComputers(C *connectwise.Client, params *connectwise.Parameters) ([]Comp
 	return resource, nil
 }
 
-// Stats?
-/*
-   "CpuScore": 8.7,
-   "D3DScore": 9.9,
-   "DiskScore": 5.9,
-   "GraphicsScore": 6.5,
-   "MemoryScore": 8.7,
-*/
+// GetComputer returns a single Computer.
+func GetComputer(C *connectwise.Client, computerID string) (Computer, error) {
+	var (
+		resource Computer
+		desc     string         = `computer`
+		ep       connectwise.EP = connectwise.EPComputer
+	)
+	if !ValidComputerID(computerID) {
+		return resource, fmt.Errorf("error retrieving %s %q: %s", desc, computerID, `invalid computerID`)
+	}
+	b, err := C.Get(ep, nil, computerID)
+	if err != nil {
+		return resource, fmt.Errorf("error retrieving %s %q: %w", desc, computerID, err)
+	}
+	err = json.Unmarshal(b, &resource)
+	if err != nil {
+		return resource, fmt.Errorf("error unmarshaling %s %q: %w", desc, computerID, err)
+	}
+	return resource, nil
+}
+
+func ValidComputerID(computerID string) bool {
+	valid, _ := regexp.MatchString(`^[0-9]+$`, computerID)
+	return valid
+}

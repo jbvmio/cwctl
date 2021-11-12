@@ -14,7 +14,13 @@ var cmdGetComputers = &cobra.Command{
 		switch len(args) {
 		case 0:
 		case 1:
-			ids = `id eq ` + args[0]
+			client := initClient(cfg)
+			target, err := cwctl.GetComputer(client, args[0])
+			if err != nil {
+				Failf("error attempting GetComputer: %v", err)
+			}
+			handlePrint([]cwctl.Computer{target}, outFormat)
+			return
 		default:
 			ids = `id in(` + args[0]
 			for _, id := range args[1:] {
