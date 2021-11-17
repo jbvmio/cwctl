@@ -12,10 +12,10 @@ var cmdComputerCommands = &cobra.Command{
 	Args:    cobra.MaximumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) > 0 {
-			cliFlags.Condition = `id eq ` + args[0]
+			paramFlags.Condition = `id eq ` + args[0]
 		}
 		client := initClient(cfg)
-		target, err := cwctl.GetCommandsExecuted(client, paramsDefault.merge(&cliFlags), cliTargetID)
+		target, err := cwctl.GetCommandsExecuted(client, paramsDefault.merge(&paramFlags), cliTargetID)
 		if err != nil {
 			Failf("error attempting GetComputerCommands: %v", err)
 		}
@@ -24,7 +24,7 @@ var cmdComputerCommands = &cobra.Command{
 			return
 		}
 		switch {
-		case cliFlags.Condition != "":
+		case paramFlags.Condition != "":
 			switch {
 			case cmd.Flags().Changed(`out`):
 				handlePrint(target, outFormat)
@@ -44,7 +44,7 @@ var cmdComputerCommands = &cobra.Command{
 
 func init() {
 	cmdComputerCommands.Flags().StringVarP(&cliTargetID, "computer-id", `C`, "", "ID of the Computer to target.")
-	cmdComputerCommands.Flags().StringVarP(&cliFlags.Page, "page", `p`, cliFlags.Page, "Page number of results.")
-	cmdComputerCommands.Flags().StringVarP(&cliFlags.PageSize, "page-size", `s`, cliFlags.PageSize, "Results per page.")
+	cmdComputerCommands.Flags().StringVarP(&paramFlags.Page, "page", `p`, paramFlags.Page, "Page number of results.")
+	cmdComputerCommands.Flags().StringVarP(&paramFlags.PageSize, "page-size", `s`, paramFlags.PageSize, "Results per page.")
 	cmdComputerCommands.MarkFlagRequired(`computer-id`)
 }

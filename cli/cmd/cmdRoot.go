@@ -10,6 +10,7 @@ import (
 )
 
 var (
+	cliFlags  CLIFlags
 	cfgFile   string
 	outFormat string
 	cfg       *Config

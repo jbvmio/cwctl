@@ -20,6 +20,8 @@ const (
 	EPComputerCmdResult
 	EPComputerCmdHistory
 	EPCommands
+	EPScripts
+	EPPostScripts
 )
 
 var epStrings = [...]string{
@@ -33,6 +35,8 @@ var epStrings = [...]string{
 	`/cwa/api/v1/computers/%v/commandexecute/%v`,
 	`/cwa/api/v1/computers/%v/commandhistory`,
 	`/cwa/api/v1/commands`,
+	`/cwa/api/v1/scripts`,
+	`/cwa/api/v1/scripts`,
 }
 
 var setEmpty = struct{}{}
@@ -45,6 +49,19 @@ var availEPs = map[EP]struct{}{
 	EPComputerCmdResult:  setEmpty,
 	EPComputerCmdHistory: setEmpty,
 	EPCommands:           setEmpty,
+	EPScripts:            setEmpty,
+	EPPostScripts:        setEmpty,
+}
+
+func getMethod(ep EP) (method string) {
+	switch ep {
+	case EPToken, EPTokenRefresh:
+		return `POST`
+	case EPComputerCmdExec, EPComputerCmdPrompt, EPPostScripts:
+		return `POST`
+	default:
+		return `GET`
+	}
 }
 
 func (ep EP) String(args ...interface{}) string {
@@ -93,15 +110,4 @@ func GetEndPoints(args ...interface{}) []EndPoint {
 		return EPs[i].ID < EPs[j].ID
 	})
 	return EPs
-}
-
-func getMethod(ep EP) (method string) {
-	switch ep {
-	case EPToken, EPTokenRefresh:
-		return `POST`
-	case EPComputerCmdExec, EPComputerCmdPrompt:
-		return `POST`
-	default:
-		return `GET`
-	}
 }

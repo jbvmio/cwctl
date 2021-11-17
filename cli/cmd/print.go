@@ -29,9 +29,9 @@ func printOut(i interface{}) {
 			tbl.AddRow(v.Id, v.Name, v.Company, v.City, v.State, len(v.Locations))
 		}
 	case []cwctl.Computer:
-		tbl = table.New("ID", "DOMAIN", "COMPUTER", "IP", "OS", "VirusScanner", "AntivirusDefinitions", "AGENT", "STATUS", "LastHeartBeat", "LastUser")
+		tbl = table.New("ID", "DOMAIN", "COMPUTER", "IP", "OS", "VirusScanner", "AntivirusDefinitions", "AGENT", "STATUS", "LastContact", "LastUser")
 		for _, v := range i {
-			tbl.AddRow(v.Id, v.DomainName, v.ComputerName, v.LocalIPAddress, v.OperatingSystemName, v.VirusScanner.Name, v.AntivirusDefinitionDate, v.RemoteAgentVersion, v.Status, v.LastHeartbeat, v.LastUserName)
+			tbl.AddRow(v.Id, v.DomainName, v.ComputerName, v.LocalIPAddress, v.OperatingSystemName, v.VirusScanner.Name, v.AntivirusDefinitionDate, v.RemoteAgentVersion, v.Status, v.RemoteAgentLastContact, v.LastUserName)
 		}
 	case []cwctl.Command:
 		tbl = table.New("ID", "NAME", "DESCRIPTION")

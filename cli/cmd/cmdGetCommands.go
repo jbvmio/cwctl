@@ -35,9 +35,9 @@ var cmdGetCommands = &cobra.Command{
 				condition += ` or ` + field + ` ` + op + ` "` + pct + a + pct + `"`
 			}
 		}
-		cliFlags.Condition = condition
+		paramFlags.Condition = condition
 		client := initClient(cfg)
-		target, err := cwctl.GetCommands(client, paramsDefault.merge(&cliFlags))
+		target, err := cwctl.GetCommands(client, paramsDefault.merge(&paramFlags))
 		if err != nil {
 			Failf("error attempting GetClients: %v", err)
 		}
@@ -48,6 +48,6 @@ var cmdGetCommands = &cobra.Command{
 func init() {
 	cmdGetCommands.Flags().StringSliceVar(&cliTargets, "ids", cliTargets, "Target Command IDs.")
 	cmdGetCommands.Flags().BoolVarP(&cliExactMatch, "exact", "x", false, "Exact Match.")
-	cmdGetCommands.Flags().StringVarP(&cliFlags.Page, "page", `p`, cliFlags.Page, "Page number of results.")
-	cmdGetCommands.Flags().StringVarP(&cliFlags.PageSize, "page-size", `s`, cliFlags.PageSize, "Results per page.")
+	cmdGetCommands.Flags().StringVarP(&paramFlags.Page, "page", `p`, paramFlags.Page, "Page number of results.")
+	cmdGetCommands.Flags().StringVarP(&paramFlags.PageSize, "page-size", `s`, paramFlags.PageSize, "Results per page.")
 }

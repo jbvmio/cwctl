@@ -9,7 +9,7 @@ var (
 	cliTargetID   string
 	cliTargets    []string
 	cliExactMatch bool
-	cliFlags      = connectwise.Parameters{
+	paramFlags    = connectwise.Parameters{
 		Page:     `1`,
 		PageSize: `50`,
 	}

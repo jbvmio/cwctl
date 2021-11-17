@@ -40,6 +40,7 @@ func init() {
 }
 
 // runCommandOld is ExecuteCommand, replaced by ExecuteCommandPrompt
+/*
 func runCommandOld(cliIntID int, args ...string) {
 	commands := make([]string, len(args))
 	for i := 0; i < len(args); i++ {
@@ -53,9 +54,10 @@ func runCommandOld(cliIntID int, args ...string) {
 		Parameters: commands,
 	}
 	client := initClient(cfg)
-	target, err := cwctl.ExecuteCommand(client, paramsDefault.merge(&cliFlags), body)
+	target, err := cwctl.ExecuteCommand(client, paramsDefault.merge(&paramFlags), body)
 	if err != nil {
 		Failf("error attempting RunComputerCommands: %v", err)
 	}
 	handlePrint(target, outFormat)
 }
+*/
