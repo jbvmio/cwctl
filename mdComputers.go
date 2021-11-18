@@ -116,7 +116,7 @@ func GetComputers(C *connectwise.Client, params *connectwise.Parameters) ([]Comp
 	}
 	err = json.Unmarshal(b, &resource)
 	if err != nil {
-		return resource, fmt.Errorf("error unmarshaling %s: %v", desc, err)
+		return resource, fmt.Errorf("error unmarshaling %s: %w", desc, err)
 	}
 	return resource, nil
 }

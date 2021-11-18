@@ -126,5 +126,5 @@ func checkApiErr(body io.ReadCloser) error {
 	if tmp.Message == "" {
 		return nil
 	}
-	return fmt.Errorf(tmp.Message)
+	return fmt.Errorf("%s", tmp.Message)
 }

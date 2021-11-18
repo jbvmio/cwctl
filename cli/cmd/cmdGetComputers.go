@@ -1,9 +1,8 @@
 package cmd
 
 import (
-	"strings"
-
 	"github.com/jbvmio/cwctl"
+	"github.com/jbvmio/cwctl/connectwise"
 	"github.com/spf13/cobra"
 )
 
@@ -12,51 +11,13 @@ var cmdGetComputers = &cobra.Command{
 	Aliases: []string{"computers", "comps", "comp"},
 	Short:   "get computer details",
 	Run: func(cmd *cobra.Command, args []string) {
-		var condition, clientID, comps, ids string
-		switch {
-		case cliFlags.Query != "":
-			condition = cliFlags.Query
-		default:
-			switch len(cliFlags.Targets) {
-			case 0:
-			case 1:
-				client := initClient(cfg)
-				target, err := cwctl.GetComputer(client, cliFlags.Targets[0])
-				if err != nil {
-					Failf("error attempting GetComputer: %v", err)
-				}
-				handlePrint([]cwctl.Computer{target}, outFormat)
-				return
-			default:
-				ids = `id in(` + cliFlags.Targets[0]
-				for _, id := range cliFlags.Targets[1:] {
-					ids += `, ` + id
-				}
-				ids += `)`
-			}
-			switch len(args) {
-			case 0:
-			default:
-				comps = `(ComputerName like '%` + args[0] + `%'`
-				for _, cn := range args[1:] {
-					comps += ` or ComputerName like '%` + cn + `%'`
-				}
-				comps += `)`
-			}
-			switch {
-			case !cmd.Flags().Changed(`client-id`):
-			default:
-				clientID = `(client.id eq ` + cliTargetID + `)`
-			}
-			condition = clientID + ` and ` + comps + ` and ` + ids
-			for strings.HasPrefix(condition, ` and `) {
-				condition = strings.TrimPrefix(condition, ` and `)
-			}
-			for strings.HasSuffix(condition, ` and `) {
-				condition = strings.TrimSuffix(condition, ` and `)
-			}
+		conditionals := &connectwise.Conditionals{}
+		conditionals.AndIN("id", interfaceStrings(cliFlags.Targets)...).
+			AndContains(connectwise.OR, "ComputerName", interfaceStrings(args)...)
+		if cliTargetID != "" {
+			conditionals.AndEquals(connectwise.OR, "client.id", cliTargetID)
 		}
-		paramFlags.Condition = condition
+		paramFlags.Condition = conditionals.String()
 		client := initClient(cfg)
 		target, err := cwctl.GetComputers(client, paramsComputer.merge(&paramFlags))
 		if err != nil {
