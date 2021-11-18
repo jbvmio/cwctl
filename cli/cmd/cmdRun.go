@@ -19,4 +19,5 @@ var cmdRun = &cobra.Command{
 
 func init() {
 	cmdRun.AddCommand(cmdRunComputer)
+	cmdRun.AddCommand(cmdLocalScript)
 }
