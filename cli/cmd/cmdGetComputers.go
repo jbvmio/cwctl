@@ -18,9 +18,10 @@ var cmdGetComputers = &cobra.Command{
 		default:
 			conditionals := &connectwise.Conditionals{}
 			conditionals.AndIN("id", interfaceStrings(cliFlags.Targets)...).
-				AndContains(connectwise.OR, "ComputerName", interfaceStrings(args)...)
-			if cliTargetID != "" {
-				conditionals.AndEquals(connectwise.OR, "client.id", cliTargetID)
+				AndContains(connectwise.OR, "ComputerName", interfaceStrings(args)...).
+				AndContains(connectwise.OR, "OperatingSystemName", interfaceStrings(cliFlags.OSTargets)...)
+			if cliFlags.Target != "" {
+				conditionals.AndEquals(connectwise.OR, "client.id", cliFlags.Target)
 			}
 			condition = conditionals.String()
 		}
@@ -35,9 +36,10 @@ var cmdGetComputers = &cobra.Command{
 }
 
 func init() {
-	cmdGetComputers.Flags().StringVarP(&cliTargetID, "client-id", `C`, "", "ID of the Client to target.")
-	cmdGetComputers.Flags().StringSliceVar(&cliFlags.Targets, "ids", cliFlags.Targets, "Desired Computer IDs.")
-	cmdGetComputers.Flags().StringVarP(&cliFlags.Query, "query", `q`, "", "Use a Query.")
+	cmdGetComputers.Flags().StringVarP(&cliFlags.Target, "client-id", `C`, cliFlags.Target, "Targeted Client ID.")
+	cmdGetComputers.Flags().StringSliceVar(&cliFlags.Targets, "ids", cliFlags.Targets, "Targeted Computer IDs, comma delimited.")
+	cmdGetComputers.Flags().StringSliceVar(&cliFlags.OSTargets, "os", cliFlags.OSTargets, "Filter by OS, comma delimited.")
+	cmdGetComputers.Flags().StringVarP(&cliFlags.Query, "query", `q`, cliFlags.Query, "Use a Query, Takes Precedent.")
 	cmdGetComputers.Flags().StringVarP(&paramFlags.Page, "page", `p`, paramFlags.Page, "Page number of results.")
 	cmdGetComputers.Flags().StringVarP(&paramFlags.PageSize, "page-size", `s`, paramFlags.PageSize, "Results per page.")
 	cmdGetComputers.AddCommand(cmdComputerCommands)

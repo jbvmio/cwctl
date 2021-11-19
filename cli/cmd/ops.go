@@ -1,9 +1,11 @@
 package cmd
 
 type CLIFlags struct {
-	Target  string
-	Targets []string
-	Query   string
+	Target      string
+	Targets     []string
+	OSTargets   []string
+	UserTargets []string
+	Query       string
 }
 
 func interfaceStrings(v []string) []interface{} {
