@@ -11,13 +11,20 @@ var cmdGetComputers = &cobra.Command{
 	Aliases: []string{"computers", "comps", "comp"},
 	Short:   "get computer details",
 	Run: func(cmd *cobra.Command, args []string) {
-		conditionals := &connectwise.Conditionals{}
-		conditionals.AndIN("id", interfaceStrings(cliFlags.Targets)...).
-			AndContains(connectwise.OR, "ComputerName", interfaceStrings(args)...)
-		if cliTargetID != "" {
-			conditionals.AndEquals(connectwise.OR, "client.id", cliTargetID)
+		var condition string
+		switch {
+		case cliFlags.Query != "":
+			condition = cliFlags.Query
+		default:
+			conditionals := &connectwise.Conditionals{}
+			conditionals.AndIN("id", interfaceStrings(cliFlags.Targets)...).
+				AndContains(connectwise.OR, "ComputerName", interfaceStrings(args)...)
+			if cliTargetID != "" {
+				conditionals.AndEquals(connectwise.OR, "client.id", cliTargetID)
+			}
+			condition = conditionals.String()
 		}
-		paramFlags.Condition = conditionals.String()
+		paramFlags.Condition = condition
 		client := initClient(cfg)
 		target, err := cwctl.GetComputers(client, paramsComputer.merge(&paramFlags))
 		if err != nil {
