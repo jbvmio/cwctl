@@ -1,8 +1,6 @@
 package cmd
 
 import (
-	"encoding/base64"
-	"fmt"
 	"io/ioutil"
 	"net/http"
 	"strings"
@@ -45,15 +43,11 @@ var cmdLocalScript = &cobra.Command{
 		if cpu.Id != cmdFlags.ComputerID {
 			Failf("error validating computerID: %q doesn't match %s", cpu.Id, cmdFlags.ComputerID)
 		}
-		enc := base64.StdEncoding.EncodeToString(data)
-		scriptCmd := fmt.Sprintf("iex $([System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String(\"%s\")))", enc)
-		cmdFlags.UsePowerShell = true
-		if !cpu.IsWindows() {
-			//Failf("error: Windows Only ATM")
-			scriptCmd = fmt.Sprintf("echo \"%s\" | base64 -d | bash", enc)
-			cmdFlags.UsePowerShell = false
+		usePwsh := false
+		if cpu.IsWindows() {
+			usePwsh = true
 		}
-		cmdFlags.CommandText = scriptCmd
+		cmdFlags.CommandText = encodedScriptCommand(data, usePwsh)
 		target, err := cpu.ExecuteCommand(client, cmdFlags)
 		if err != nil {
 			Failf("error attempting RunLocalScript: %v", err)
@@ -65,7 +59,7 @@ var cmdLocalScript = &cobra.Command{
 func init() {
 	cmdLocalScript.Flags().StringVarP(&cmdFlags.ComputerID, "computer-id", `C`, "", "ID of the Computer to target.")
 	cmdLocalScript.Flags().StringVarP(&cmdFlags.Directory, "dir", `D`, "", "Working Directory for the Command.")
-	cmdLocalScript.Flags().StringVar(&scriptPath, "script", "", "Path to Script.")
+	cmdLocalScript.Flags().StringVar(&scriptPath, "script", "", "Local Path or URL to Script.")
 	cmdLocalScript.MarkFlagRequired(`computer-id`)
 	cmdLocalScript.MarkFlagRequired(`script`)
 }
