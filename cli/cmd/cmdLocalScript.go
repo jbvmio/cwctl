@@ -43,11 +43,11 @@ var cmdLocalScript = &cobra.Command{
 		if cpu.Id != cmdFlags.ComputerID {
 			Failf("error validating computerID: %q doesn't match %s", cpu.Id, cmdFlags.ComputerID)
 		}
-		usePwsh := false
+		cmdFlags.UsePowerShell = false
 		if cpu.IsWindows() {
-			usePwsh = true
+			cmdFlags.UsePowerShell = true
 		}
-		cmdFlags.CommandText = encodedScriptCommand(data, usePwsh)
+		cmdFlags.CommandText = encodedScriptCommand(data, cmdFlags.UsePowerShell)
 		target, err := cpu.ExecuteCommand(client, cmdFlags)
 		if err != nil {
 			Failf("error attempting RunLocalScript: %v", err)
