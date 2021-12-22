@@ -5,7 +5,7 @@ import (
 )
 
 var cmdRefreshToken = &cobra.Command{
-	Use:     "refesh-token",
+	Use:     "refresh-token",
 	Aliases: []string{`refresh`},
 	Short:   "refresh existing access token",
 	Run: func(cmd *cobra.Command, args []string) {

@@ -40,6 +40,7 @@ func init() {
 	rootCmd.AddCommand(cmdGet)
 	rootCmd.AddCommand(cmdRun)
 	rootCmd.AddCommand(cmdRaw)
+	rootCmd.AddCommand(cmdSend)
 	rootCmd.AddCommand(cmdRefreshToken)
 }
 

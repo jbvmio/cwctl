@@ -30,5 +30,5 @@ var cmdGet = &cobra.Command{
 func init() {
 	cmdGet.AddCommand(cmdGetClients)
 	cmdGet.AddCommand(cmdGetComputers)
-	cmdGet.AddCommand(cmdGetCommands)
+	cmdGet.AddCommand(cmdComputerCommands)
 }

@@ -4,10 +4,9 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var cmdRunComputer = &cobra.Command{
-	Use:     "computer",
-	Aliases: []string{"computers", "comps", "comp"},
-	Short:   "run / execute computer actions",
+var cmdSend = &cobra.Command{
+	Use:   "send",
+	Short: "send actions",
 	Run: func(cmd *cobra.Command, args []string) {
 		switch len(args) {
 		case 0:
@@ -19,5 +18,5 @@ var cmdRunComputer = &cobra.Command{
 }
 
 func init() {
-	cmdRunComputer.AddCommand(cmdRunComputerCommands)
+	cmdSend.AddCommand(cmdLocalFile)
 }

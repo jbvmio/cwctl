@@ -11,9 +11,8 @@ import (
 
 var scriptPath string
 var cmdLocalScript = &cobra.Command{
-	Use:     "local-script",
-	Aliases: []string{`ls`, `lscript`},
-	Short:   "run local script",
+	Use:   "script",
+	Short: "run local or http(s) script",
 	Run: func(cmd *cobra.Command, args []string) {
 		var data []byte
 		var err error

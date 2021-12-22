@@ -36,11 +36,10 @@ var cmdGetComputers = &cobra.Command{
 }
 
 func init() {
-	cmdGetComputers.Flags().StringVarP(&cliFlags.Target, "client-id", `C`, cliFlags.Target, "Targeted Client ID.")
-	cmdGetComputers.Flags().StringSliceVar(&cliFlags.Targets, "ids", cliFlags.Targets, "Targeted Computer IDs, comma delimited.")
+	cmdGetComputers.Flags().StringVar(&cliFlags.Target, "client", cliFlags.Target, "Targeted Client ID.")
+	cmdGetComputers.Flags().StringSliceVarP(&cliFlags.Targets, "computer-id", `C`, cliFlags.Targets, "Targeted Computer IDs, comma delimited.")
 	cmdGetComputers.Flags().StringSliceVar(&cliFlags.OSTargets, "os", cliFlags.OSTargets, "Filter by OS, comma delimited.")
 	cmdGetComputers.Flags().StringVarP(&cliFlags.Query, "query", `q`, cliFlags.Query, "Use a Query, Takes Precedent.")
 	cmdGetComputers.Flags().StringVarP(&paramFlags.Page, "page", `p`, paramFlags.Page, "Page number of results.")
 	cmdGetComputers.Flags().StringVarP(&paramFlags.PageSize, "page-size", `s`, paramFlags.PageSize, "Results per page.")
-	cmdGetComputers.AddCommand(cmdComputerCommands)
 }
