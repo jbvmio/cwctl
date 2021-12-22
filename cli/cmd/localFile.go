@@ -8,6 +8,7 @@ import (
 const (
 	encPwshFileCMD = "[System.IO.File]::WriteAllBytes(\"%s\", [System.Convert]::FromBase64String(\"%s\"))"
 	encBashFileCMD = "echo \"%s\" | base64 -d > \"%s\""
+	maxSize        = 24064
 )
 
 func encodedFileCommand(file []byte, filename string, pwsh bool) (fileCmd string) {

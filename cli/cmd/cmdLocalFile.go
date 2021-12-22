@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"fmt"
 	"io/ioutil"
 	"net/http"
 	"path/filepath"
@@ -46,11 +45,11 @@ var cmdLocalFile = &cobra.Command{
 		if err != nil {
 			Failf("error reading file from %q: %v", filePath, err)
 		}
-
-		fmt.Println(">>", len(data))
-
-		if len(data) == 0 {
+		switch {
+		case len(data) == 0:
 			Failf("error: no data from %q", filePath)
+		case len(data) > maxSize:
+			Failf("error: filesize of %dk for %q exceeds 23k", len(data)/1024, filePath)
 		}
 		client := initClient(cfg)
 		cpu, err := cwctl.GetComputer(client, cmdFlags.ComputerID)

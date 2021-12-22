@@ -31,8 +31,11 @@ var cmdLocalScript = &cobra.Command{
 		if err != nil {
 			Failf("error reading script from %q: %v", scriptPath, err)
 		}
-		if len(data) == 0 {
-			Failf("error: no data from %q", scriptPath)
+		switch {
+		case len(data) == 0:
+			Failf("error: no data from %q", filePath)
+		case len(data) > maxSize:
+			Failf("error: filesize of %d for %q exceeds 23k", len(data)/1024, filePath)
 		}
 		client := initClient(cfg)
 		cpu, err := cwctl.GetComputer(client, cmdFlags.ComputerID)
@@ -40,7 +43,7 @@ var cmdLocalScript = &cobra.Command{
 			Failf("error attempting GetComputer: %v", err)
 		}
 		if cpu.Id != cmdFlags.ComputerID {
-			Failf("error validating computerID: %q doesn't match %s", cpu.Id, cmdFlags.ComputerID)
+			Failf("error validating computerID: %qk doesn't match %s", cpu.Id, cmdFlags.ComputerID)
 		}
 		cmdFlags.UsePowerShell = false
 		if cpu.IsWindows() {
