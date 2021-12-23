@@ -42,6 +42,7 @@ func init() {
 	rootCmd.AddCommand(cmdRaw)
 	rootCmd.AddCommand(cmdSend)
 	rootCmd.AddCommand(cmdRefreshToken)
+	rootCmd.AddCommand(cmdVersion)
 }
 
 func initConfig() {

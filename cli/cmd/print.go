@@ -39,8 +39,8 @@ func printOut(i interface{}) {
 			tbl.AddRow(v.Id, v.Name, truncateString(v.Description, 120))
 		}
 	case cwctl.CommandPrompt:
-		tbl = table.New("ID", "COMPUTER", "COMMAND")
-		tbl.AddRow(i.CommandID, i.ComputerID, truncateString(i.CommandText, 120))
+		tbl = table.New("ID", "COMPUTER", "DIR", "COMMAND")
+		tbl.AddRow(i.CommandID, i.ComputerID, i.Directory, truncateString(i.CommandText, 120))
 	case []cwctl.CommandHistory:
 		tbl = table.New("ID", "ComputerID", "STATUS", "USER", "PARAMETERS", "EXECUTED", "FINISHED")
 		for _, v := range i {

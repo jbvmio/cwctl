@@ -7,6 +7,8 @@ import (
 	"github.com/jbvmio/cwctl/connectwise"
 )
 
+const windowsCdDirFmt = `cd %s;if(!$?){return};%s`
+
 type CommandPrompt struct {
 	ComputerID    string `json:"ComputerID,omitempty"`
 	CommandID     int    `json:"CommandID,omitempty"`

@@ -6,8 +6,9 @@ import (
 )
 
 var cmdGetCommands = &cobra.Command{
-	Use:   "commands",
-	Short: "list / get commands",
+	Use:     "command",
+	Aliases: []string{"commands", "cmd", "cmds"},
+	Short:   "list / get commands",
 	Run: func(cmd *cobra.Command, args []string) {
 		var condition string
 		field := `name`

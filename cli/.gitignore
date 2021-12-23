@@ -1,3 +1,4 @@
 bin/*
 tmp/*
 testScripts/scripts/*
+goBuild.sh

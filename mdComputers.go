@@ -90,8 +90,11 @@ func (c *Computer) ExecuteCommand(C *connectwise.Client, cmd CommandPrompt) (Com
 	cmd.ComputerID = c.Id
 	switch {
 	case c.IsWindows():
-		if cmd.Directory == "" {
+		switch cmd.Directory {
+		case "":
 			cmd.Directory = `%windir%\\system32`
+		default:
+			cmd.CommandText = fmt.Sprintf(windowsCdDirFmt, cmd.Directory, cmd.CommandText)
 		}
 	default:
 		if cmd.Directory == "" {
