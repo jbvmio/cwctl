@@ -58,7 +58,7 @@ func clientFromConfig(cfg *Config) (*connectwise.Client, error) {
 		client, err := connectwise.NewClient(cfg.BaseURL, cfg.ClientID, token)
 		if err != nil {
 			switch err.Error() {
-			case `Token Expired`:
+			case `Token Expired`, `Token Invalid`:
 				return loginCW(cfg)
 			default:
 				return client, fmt.Errorf("error creating CW client: %w", err)
