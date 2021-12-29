@@ -98,10 +98,12 @@ func (C *Client) SaveToken(path string) error {
 
 func clientFromToken(baseURL, clientID string, token *Token) (*Client, error) {
 	E, err := token.Expires()
-	if err != nil {
+	switch {
+	case *token == (Token{}):
+		return &Client{}, fmt.Errorf("Token Invalid")
+	case err != nil:
 		return &Client{}, fmt.Errorf("error obtaining token expiration: %w", err)
-	}
-	if time.Now().UTC().After(E) {
+	case time.Now().UTC().After(E):
 		return &Client{}, fmt.Errorf("Token Expired")
 	}
 	return &Client{
