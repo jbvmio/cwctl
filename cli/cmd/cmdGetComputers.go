@@ -18,6 +18,7 @@ var cmdGetComputers = &cobra.Command{
 		default:
 			conditionals := &connectwise.Conditionals{}
 			conditionals.AndIN("id", interfaceStrings(cliFlags.Targets)...).
+				AndIN("location.id", interfaceStrings(cliFlags.LocationTargets)...).
 				AndContains(connectwise.OR, "ComputerName", interfaceStrings(args)...).
 				AndContains(connectwise.OR, "OperatingSystemName", interfaceStrings(cliFlags.OSTargets)...)
 			if cliFlags.Target != "" {
@@ -37,6 +38,7 @@ var cmdGetComputers = &cobra.Command{
 
 func init() {
 	cmdGetComputers.Flags().StringVar(&cliFlags.Target, "client", cliFlags.Target, "Targeted Client ID.")
+	cmdGetComputers.Flags().StringSliceVarP(&cliFlags.LocationTargets, "locations", "l", cliFlags.LocationTargets, "Filter by Location IDs, comma delimited.")
 	cmdGetComputers.Flags().StringSliceVarP(&cliFlags.Targets, "computer-id", `C`, cliFlags.Targets, "Targeted Computer IDs, comma delimited.")
 	cmdGetComputers.Flags().StringSliceVar(&cliFlags.OSTargets, "os", cliFlags.OSTargets, "Filter by OS, comma delimited.")
 	cmdGetComputers.Flags().StringVarP(&cliFlags.Query, "query", `q`, cliFlags.Query, "Use a Query, Takes Precedent.")
