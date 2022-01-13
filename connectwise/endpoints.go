@@ -22,6 +22,7 @@ const (
 	EPCommands
 	EPScripts
 	EPPostScripts
+	EPSendTo
 )
 
 var epStrings = [...]string{
@@ -37,6 +38,7 @@ var epStrings = [...]string{
 	`/cwa/api/v1/commands`,
 	`/cwa/api/v1/scripts`,
 	`/cwa/api/v1/scripts`,
+	`/cwa/api/v1/Batch/Commands/SendTo`,
 }
 
 var setEmpty = struct{}{}
@@ -51,13 +53,14 @@ var availEPs = map[EP]struct{}{
 	EPCommands:           setEmpty,
 	EPScripts:            setEmpty,
 	EPPostScripts:        setEmpty,
+	EPSendTo:             setEmpty,
 }
 
 func getMethod(ep EP) (method string) {
 	switch ep {
 	case EPToken, EPTokenRefresh:
 		return `POST`
-	case EPComputerCmdExec, EPComputerCmdPrompt, EPPostScripts:
+	case EPComputerCmdExec, EPComputerCmdPrompt, EPPostScripts, EPSendTo:
 		return `POST`
 	default:
 		return `GET`

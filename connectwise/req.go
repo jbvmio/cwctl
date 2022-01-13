@@ -39,10 +39,12 @@ func (C *Client) Post(ep EP, params *Parameters, body interface{}, args ...inter
 	}
 	req.Header.Add(`Authorization`, `Bearer `+C.Token.AccessToken)
 	resp, err := C.c.Do(req)
-	switch {
-	case err != nil:
+	if err != nil {
 		return []byte{}, fmt.Errorf("error sending POST request: %w", err)
-	case resp.StatusCode != 200:
+	}
+	switch resp.StatusCode {
+	case 200, 202:
+	default:
 		err = checkApiErr(resp.Body)
 		if err == nil {
 			err = fmt.Errorf("status code %d", resp.StatusCode)

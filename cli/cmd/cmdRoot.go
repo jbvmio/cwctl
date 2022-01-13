@@ -10,10 +10,11 @@ import (
 )
 
 var (
-	cliFlags  CLIFlags
-	cfgFile   string
-	outFormat string
-	cfg       *Config
+	cliFlags      CLIFlags
+	cfgFile       string
+	outFormat     string
+	cfg           *Config
+	disableStatic bool
 )
 
 // rootCmd represents the base command when called without any subcommands
@@ -36,16 +37,24 @@ func Execute() {
 func init() {
 	cobra.OnInitialize(initConfig)
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", homeDir()+`/.cwctl.yaml`, "Path to config file")
+	rootCmd.PersistentFlags().BoolVarP(&disableStatic, "disable-static", "X", false, "Disable static variables if set.")
 	rootCmd.PersistentFlags().StringVarP(&outFormat, "out", "o", "", "Additional Output Formatting Options - json|pretty|yaml.")
 	rootCmd.AddCommand(cmdGet)
 	rootCmd.AddCommand(cmdRun)
 	rootCmd.AddCommand(cmdRaw)
 	rootCmd.AddCommand(cmdSend)
 	rootCmd.AddCommand(cmdRefreshToken)
+	rootCmd.AddCommand(cmdRelocate)
 	rootCmd.AddCommand(cmdVersion)
 }
 
 func initConfig() {
+	if !disableStatic {
+		cfg = staticConfig()
+		if cfg != nil {
+			return
+		}
+	}
 	var err error
 	cfg, err = GetConfig(cfgFile)
 	if err != nil {

@@ -15,11 +15,31 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
+var (
+	staticBaseURL  string
+	staticClientID string
+)
+
 // Config holds configuration details for API ops for siemplify.
 type Config struct {
 	BaseURL   string `json:"baseURL" yaml:"baseURL"`
 	ClientID  string `json:"clientID" yaml:"clientID"`
 	TokenFile string `json:"tokenFile" yaml:"tokenFile"`
+}
+
+// staticConfig attempts to create and return a Config if static variables are set.
+// Returns nil if static variables are missing.
+// staticConfig always sets the TokenFile in the user's home directory using .cwTokenFile.yaml
+func staticConfig() *Config {
+	switch "" {
+	case staticBaseURL, staticClientID:
+		return nil
+	}
+	return &Config{
+		BaseURL:   staticBaseURL,
+		ClientID:  staticClientID,
+		TokenFile: homeDir() + `/.cwTokenFile.yaml`,
+	}
 }
 
 // GetConfig reads from the given path and returns a Config or error.
@@ -68,7 +88,7 @@ func clientFromConfig(cfg *Config) (*connectwise.Client, error) {
 		if err != nil {
 			return client, fmt.Errorf("error obtaining token seconds before expiry: %w", err)
 		}
-		if S <= 300 {
+		if S <= 2400 {
 			err := client.RefreshToken()
 			if err != nil {
 				return client, fmt.Errorf("error refreshing token: %w", err)

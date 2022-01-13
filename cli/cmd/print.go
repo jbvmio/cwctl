@@ -46,6 +46,11 @@ func printOut(i interface{}) {
 		for _, v := range i {
 			tbl.AddRow(v.Id, v.ComputerId, v.Status, v.User, truncateString(v.Parameters, 120), v.DateExecuted, v.DateFinished)
 		}
+	case cwctl.RelocateResults:
+		tbl = table.New("COMPUTER", "STATUS", "CODE", "MESSAGE")
+		for _, v := range i.SendToResults {
+			tbl.AddRow(v.EntityId, v.ResultDetails.ResultStatus, v.ResultDetails.ReasonCode, v.ResultDetails.Message)
+		}
 	case cwctl.CommandExecuteResponse:
 		tbl = table.New("ID", "ComputerID", "STATUS", "PARAMETERS", "LastInventoried")
 		tbl.AddRow(i.Id, i.ComputerId, i.Status, len(i.Parameters), i.DateLastInventoried)
